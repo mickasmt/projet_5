@@ -1,4 +1,6 @@
-const productsList = document.getElementById('products_list');
+const camerasList = document.getElementById('cameras_list');
+const teddiesList = document.getElementById('teddies_list');
+const furnitureList = document.getElementById('furniture_list');
 
 // ------------------------------------------
 //  FETCH FUNCTIONS
@@ -23,10 +25,14 @@ Promise.all(urls.map(url =>
     const furnitureList = data[2];
 
     // Concat array for to create one array
-    const bigList = cameraList.concat(teddiesList, furnitureList)
-
+    // const bigList = cameraList.concat(teddiesList, furnitureList)
     // console.log(bigList);
-    generateCards(bigList);
+    // generateCards(bigList);
+
+    generateCameras(cameraList);
+    generateTeddies(teddiesList);
+    generateFurniture(furnitureList);
+
 })
   
 
@@ -46,13 +52,41 @@ function parseJSON(response) {
     return response.json();
 }
 
-function generateCards(data) {
-    const products = data.map(item => `
+function generateCameras(data) {
+    const cameras = data.map(item => `
         <div>
-            <img src="${item.imageUrl}" alt="${item.name}" height="200" width="200">
+            <a href="/products/?item=cameras&id=${item._id}">
+                <img src="${item.imageUrl}" alt="${item.name}" width="250">
+            </a>
             <p>Nom : ${item.name}</p>
             <p>Prix : ${item.price}</p>
         </div>
     `).join('');
-    productsList.innerHTML = products;
+    camerasList.innerHTML = cameras;
+}
+
+function generateTeddies(data) {
+    const teddies = data.map(item => `
+        <div>
+            <a href="/products/${item._id}">
+                <img src="${item.imageUrl}" alt="${item.name}" width="250">
+            </a>
+            <p>Nom : ${item.name}</p>
+            <p>Prix : ${item.price}</p>
+        </div>
+    `).join('');
+    teddiesList.innerHTML = teddies;
+}
+
+function generateFurniture(data) {
+    const furniture = data.map(item => `
+        <div>
+            <a href="/products/${item._id}">
+                <img src="${item.imageUrl}" alt="${item.name}" width="250">
+            </a>
+            <p>Nom : ${item.name}</p>
+            <p>Prix : ${item.price}</p>
+        </div>
+    `).join('');
+    furnitureList.innerHTML = furniture;
 }

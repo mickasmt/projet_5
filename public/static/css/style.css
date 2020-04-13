@@ -1,0 +1,8 @@
+#cameras_list,
+#teddies_list,
+#furniture_list {
+    margin: 20px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 250px);
+    grid-gap: 1rem;
+}
