@@ -1,15 +1,11 @@
-const camerasList = document.getElementById('cameras_list');
 const teddiesList = document.getElementById('teddies_list');
-const furnitureList = document.getElementById('furniture_list');
 
 // ------------------------------------------
 //  FETCH FUNCTIONS
 // ------------------------------------------
 
 const urls = [
-    'http://localhost:3000/api/cameras',
-    'http://localhost:3000/api/teddies',
-    'http://localhost:3000/api/furniture'
+    'http://localhost:3000/api/teddies'
 ];
 
 Promise.all(urls.map(url =>
@@ -20,19 +16,9 @@ Promise.all(urls.map(url =>
 ))
 .then(data => {
     // console.log(data);
-    const cameraList = data[0];
-    const teddiesList = data[1];
-    const furnitureList = data[2];
+    const teddiesList = data[0];
 
-    // Concat array for to create one array
-    // const bigList = cameraList.concat(teddiesList, furnitureList)
-    // console.log(bigList);
-    // generateCards(bigList);
-
-    generateCameras(cameraList);
     generateTeddies(teddiesList);
-    generateFurniture(furnitureList);
-
 })
   
 
@@ -52,41 +38,17 @@ function parseJSON(response) {
     return response.json();
 }
 
-function generateCameras(data) {
-    const cameras = data.map(item => `
-        <div>
-            <a href="/products/?item=cameras&id=${item._id}">
-                <img src="${item.imageUrl}" alt="${item.name}" width="250">
-            </a>
-            <p>Nom : ${item.name}</p>
-            <p>Prix : ${item.price}</p>
-        </div>
-    `).join('');
-    camerasList.innerHTML = cameras;
-}
-
 function generateTeddies(data) {
     const teddies = data.map(item => `
-        <div>
-            <a href="/products/${item._id}">
-                <img src="${item.imageUrl}" alt="${item.name}" width="250">
+        <div class="item">
+            <a href="/products/?item=teddies&id=${item._id}">
+                <img class="item__img" src="${item.imageUrl}" alt="${item.name}">
+                <div class="item__desc">
+                    <span>${item.name}</span>
+                    <span>${item.price} €</span>
+                </div>
             </a>
-            <p>Nom : ${item.name}</p>
-            <p>Prix : ${item.price}</p>
         </div>
     `).join('');
     teddiesList.innerHTML = teddies;
-}
-
-function generateFurniture(data) {
-    const furniture = data.map(item => `
-        <div>
-            <a href="/products/${item._id}">
-                <img src="${item.imageUrl}" alt="${item.name}" width="250">
-            </a>
-            <p>Nom : ${item.name}</p>
-            <p>Prix : ${item.price}</p>
-        </div>
-    `).join('');
-    furnitureList.innerHTML = furniture;
 }
