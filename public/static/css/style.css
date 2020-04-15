@@ -33,6 +33,9 @@ a {
 .pt-20 {
     padding-top: 20px;
 }
+.pb-20 {
+    padding-bottom: 20px;
+}
 .button {
     border: none;
     padding: 8px 16px;
@@ -150,6 +153,10 @@ header {
     background-color: #8f5bfa;
     color: #fff;
 }
+.btn-remove-cart {
+    background-color: #dc3545!important;
+    color: #fff;
+}
 /* Notification */
 a#link_toast {
     text-decoration: underline;
@@ -159,4 +166,75 @@ a#link_toast {
 }
 .swal2-popup.swal2-toast {
     box-shadow: 0 3px 6px rgba(0,0,0,0.3), 0 3px 6px rgba(0,0,0,0.3)!important;
+}
+
+/* SHOPPING CART */
+.title_shopping {
+    margin: 0;
+}
+#shopping__container {
+    width: 100%;
+    display: flex;
+    margin-top: 25px;
+    margin-bottom: 70px;
+    flex-direction: column;
+}
+#items_cart,
+.form_container {
+    display: flex;
+    flex-direction: column;
+}
+#form {
+    width: auto;
+}
+.row_form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+.form_group {
+    width: 48%;
+}
+/* FORM */
+input, select {
+    font-family: "Rawline-Bold";
+    font-size: 16px;
+}
+input[type=text], select {
+    width: 100%;
+    padding: 10px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 30%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+#submitForm {
+    float: right;
+}
+/* TABLES */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }

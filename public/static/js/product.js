@@ -5,7 +5,6 @@ const details__price = document.getElementById('details__price');
 const select_colors = document.getElementById('colors');
 
 const addCart = document.getElementById("add_cart");
-const removeCart = document.getElementById("remove_cart");
 
 // ------------------------------------------
 //  FETCH FUNCTIONS
@@ -49,21 +48,6 @@ fetch(api+item+'/'+itemID)
 // ------------------------------------------
 
 addCart.addEventListener("click", incrementCart);
-removeCart.addEventListener("click", remove_Cart);
-
-function remove_Cart() {
-    window.localStorage.clear();
-
-    swal.fire({
-        position: 'top-end',
-        toast: true,
-        icon: 'success',
-        title: ' Panier effacé !!',
-        footer: '<a id="link_toast" href="../panier">Voir mon panier</a>',
-        showConfirmButton: false,
-        timer: 3500
-    });
-}
 
 function incrementCart() {
     var cartStorage = window.localStorage.getItem('CART');
