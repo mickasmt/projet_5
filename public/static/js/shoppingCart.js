@@ -134,7 +134,26 @@ function quantity_Item() {
     totalCart.innerHTML = '';
     showListItems();
   } else {
-    // remove_Item();  // Remplacer par code 
+    // get the old cart for to update
+    var oldCart = JSON.parse(window.localStorage.getItem('CART'));
+
+    // Delete item with index
+    oldCart.items.splice(index, 1);
+    
+    // update cart in local storage
+    window.localStorage.setItem('CART', JSON.stringify(oldCart));
+
+    // get the new cart for to display
+    var newCart = JSON.parse(window.localStorage.getItem('CART'));
+    
+    if(Array.isArray(newCart.items) && newCart.items.length) {
+      tableCart.innerHTML = '<tr><th>Image</th><th>Article</th><th>Prix</th><th>Quantité</th><th>Supprimer</th></tr>';
+      totalCart.innerHTML = '';
+      showListItems();
+    } else {
+      tableCart.innerHTML = 'Panier Vide';
+      totalCart.innerHTML = '';
+    }
   }
 }
 
