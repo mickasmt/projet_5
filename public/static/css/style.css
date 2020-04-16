@@ -150,7 +150,9 @@ header {
 
 }
 .btn-add-cart {
-    background-color: #8f5bfa;
+    /* background-color: #8f5bfa; */
+    background: rgb(229,138,11);
+    background: linear-gradient(128deg, rgba(229,138,11,1) 0%, rgba(140,87,252,1) 100%);
     color: #fff;
 }
 .btn-remove-cart {
