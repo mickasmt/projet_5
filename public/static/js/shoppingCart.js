@@ -2,6 +2,7 @@
 const tableCart = document.getElementById('listing_cart');
 const totalCart = document.getElementById('total__price');
 
+
 // ------------------------------------------
 //  EVENTS FUNCTIONS
 // ------------------------------------------
@@ -11,25 +12,57 @@ showListItems();
 // fait le tour des id présent dans "items"
 function showListItems() {
     var CART = JSON.parse(window.localStorage.getItem('CART'));
-    console.log(CART);
+    // console.log(CART);
     var sum = 0;
     
     if(CART != null) {
         var cartLength = CART.items.length;
 
         for(var i=0; i < cartLength; i++) {
-            const itemID = CART.items[i].id;
-            const prix = CART.items[i].price;
-            const qty = CART.items[i].quantity;
-            
-            const prix_calcul = prix * qty;
-            sum += prix_calcul;
-        
-            // recupere que les items dans le panier
-            getItem(itemID).then(data => {
-                // image ; name ; quantité ; prix
-                tableCart.innerHTML += '<td id="col-img-'+i+'"><img src="'+data.imageUrl+'" alt="'+data.name+'" width="100px"></td><td id="col-name-'+i+'">'+data.name+'</td><td id="col-qt-'+i+'">'+qty+'</td><td id="col-price-'+i+'">'+prix_calcul+' €</td><td>+ & -</td></tr>';
-            });
+          const index = i;
+          const itemID = CART.items[i].id;
+          const prix = CART.items[i].price;
+          const qty = CART.items[i].quantity;
+          
+          const prix_calcul = prix * qty;
+          sum += prix_calcul;
+          
+
+          // recupere que les items dans le panier
+          getItem(itemID).then(data => {
+            // image ; name ; quantité ; prix
+
+            var newRow = tableCart.insertRow(tableCart.rows.length);
+
+            var cel0 = newRow.insertCell(0);
+            var cel1 = newRow.insertCell(1);
+            var cel2 = newRow.insertCell(2);
+            var cel3 = newRow.insertCell(3);
+            var cel4 = newRow.insertCell(4);
+
+            cel0.innerHTML = '<img src="'+data.imageUrl+'" alt="'+data.name+'" width="100px">';
+            cel1.innerHTML = data.name;
+            cel2.innerHTML = prix_calcul+' €';
+
+            var inputQty = document.createElement("INPUT");
+            inputQty.setAttribute("type", "number");
+            inputQty.setAttribute("class", 'quantityChange');
+            inputQty.setAttribute("id", data._id);
+            inputQty.setAttribute("value", qty);
+
+            inputQty.addEventListener("change", quantity_Item);
+            cel3.appendChild(inputQty);
+
+            var rmvBtn = document.createElement("A");
+            rmvBtn.setAttribute("class", 'remove_item');
+            rmvBtn.setAttribute("id", index);
+            var img_svg = '<img src="../static/svg/x-circle.svg" alt="x"></a>';
+            rmvBtn.innerHTML = img_svg;
+
+            rmvBtn.addEventListener("click", remove_Item);
+            cel4.appendChild(rmvBtn);
+
+          });
         }
         
         totalCart.innerHTML += 'Prix Total : '+sum+' €';
@@ -54,14 +87,7 @@ async function getItem(id) {
 // ------------------------------------------
 
 const removeCart = document.getElementById("remove_cart");
-// const moreInCart = document.getElementById("increase_item");
-// const lessInCart = document.getElementById("decrease_item");
-// const removeItem = document.getElementById("remove_item");
-
-removeCart.addEventListener("click", remove_Cart);
-// moreInCart.addEventListener("click", increase_item);
-// lessInCart.addEventListener("click", decrease_item);
-// removeItem.addEventListener("click", remove_item);
+removeCart.addEventListener("click", remove_Cart)
 
 function remove_Cart() {
     Swal.fire({
@@ -87,3 +113,31 @@ function remove_Cart() {
 
 }
 
+function quantity_Item() {
+  console.log(this.value);
+}
+
+function remove_Item() {
+  var index = this.id;
+
+  // get the old cart for to update
+  var oldCart = JSON.parse(window.localStorage.getItem('CART'));
+
+  // Delete item with index
+  oldCart.items.splice(index, 1);
+  
+  // update cart in local storage
+  window.localStorage.setItem('CART', JSON.stringify(oldCart));
+
+  // get the new cart for to display
+  var newCart = JSON.parse(window.localStorage.getItem('CART'));
+  
+  if(Array.isArray(newCart.items) && newCart.items.length) {
+    tableCart.innerHTML = '<tr><th>Image</th><th>Article</th><th>Prix</th><th>Quantité</th><th>Supprimer</th></tr>';
+    totalCart.innerHTML = '';
+    showListItems();
+  } else {
+    tableCart.innerHTML = 'Panier Vide';
+    totalCart.innerHTML = '';
+  }
+}
