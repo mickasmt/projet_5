@@ -79,7 +79,7 @@ function incrementCart() {
     }
 
     swal.fire({
-        position: 'top-end',
+        position: 'top',
         toast: true,
         icon: 'success',
         title: ours.name+' a été ajouté au panier',

@@ -3,13 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmation</title>
+    <title>Confirmation de la commande - Orinoco</title>
+
+    <link rel="stylesheet" href="../static/css/style.css">
 </head>
 <body>
-    <h1>Liste des produits</h1>
+    <header>
+        <div class="main_container">
+            <div id="header_content">
+                <a href="/">
+                    <img src="../static/img/logo_orinoco.png" alt="Orinoco_logo">
+                </a>
+                <a href="../panier/">
+                    <div class="link_svg">
+                        <img src="../static/svg/shopping-bag.svg" alt="">
+                        <span>Panier</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
 
-    <div id="products_list"></div>
+    <div class="main_container pt-20">
+        <h2 class="title__list">Confirmation de votre commande !</h2>
+        <p>L'équipe d'Oricono vous remercie d'avoir votre commande sur son site.</p>
+        <hr>
 
-    <!-- <script src="static/js/index.js"></script> -->
+        <h3 class="pt-20">Informations sur votre commande :</h3>
+        <p id="num_order"></p>
+        <p id="prix_total"></p>
+
+        <br>
+        <h4><i>A la prochaine pour une nouvelle commande !</i></h4>
+    </div>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script> 
+    <script src="../static/js/successOrder.js"></script>
 </body>
 </html>

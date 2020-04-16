@@ -2,9 +2,8 @@
 const tableCart = document.getElementById('listing_cart');
 const totalCart = document.getElementById('total__price');
 
-
 // ------------------------------------------
-//  EVENTS FUNCTIONS
+//  FUNCTIONS
 // ------------------------------------------
 
 showListItems();
@@ -78,14 +77,13 @@ function showListItems() {
   }
 }
 
-
+// get item by ID
 async function getItem(id) {
     const baseUrl = 'http://localhost:3000/api/teddies/';
     const response = await fetch(baseUrl+id);
     const data = await response.json();
     return data;
 }
-
 
 // ------------------------------------------
 //  EVENTS FUNCTIONS
@@ -95,26 +93,26 @@ const removeCart = document.getElementById("remove_cart");
 removeCart.addEventListener("click", remove_Cart)
 
 function remove_Cart() {
-    Swal.fire({
-        title: 'Etes-vous sûr ?',
-        text: "Vous ne pourrez pas revenir en arrière !",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Oui, vidé le panier !',
-        cancelButtonText: 'Annuler'
-      }).then((result) => {
-        if (result.value) {
-          Swal.fire(
-            'Panier vide !',
-            'Votre panier a bien été effacé !',
-            'success'
-          )
-          window.localStorage.clear();
-          showListItems();
-        }
-      })
+  Swal.fire({
+      title: 'Etes-vous sûr ?',
+      text: "Vous ne pourrez pas revenir en arrière !",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, vidé le panier !',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.value) {
+        Swal.fire(
+          'Panier vide !',
+          'Votre panier a bien été effacé !',
+          'success'
+        )
+        window.localStorage.clear();
+        showListItems();
+      }
+    })
 
 }
 
@@ -136,20 +134,12 @@ function quantity_Item() {
     totalCart.innerHTML = '';
     showListItems();
   } else {
-    // this.id = index;
-    remove_Item(index);
-    // console.log("Supprimé !")
+    // remove_Item();  // Remplacer par code 
   }
 }
 
-function remove_Item(id) {
-  if(id) {
-    var index = id;
-  } else {
-    var index = this.id;
-  }
-
-  // console.log(index);
+function remove_Item() {
+  var index = this.id;
 
   // get the old cart for to update
   var oldCart = JSON.parse(window.localStorage.getItem('CART'));
@@ -171,4 +161,224 @@ function remove_Item(id) {
     tableCart.innerHTML = 'Panier Vide';
     totalCart.innerHTML = '';
   }
+}
+
+// ------------------------------------------
+//  FORMS VALIDATIONS & POST
+// ------------------------------------------
+
+var submitForm = document.getElementById('submitForm');
+submitForm.addEventListener("click", formValidation)
+
+// get dom elements for form validation
+var nom = document.getElementById('surname');
+var prenom = document.getElementById('name');
+var email = document.getElementById('email');
+var adresse = document.getElementById('address');
+var ville = document.getElementById('city');
+
+function formValidation() {
+  event.preventDefault() // Annule l'action par defaut du bouton
+  var errors = 0;
+  
+  // Check Surname
+  if(nom.value !== null && nom.value.length > 2) {
+    var letters = /^[A-Za-z]+$/;
+    //Verifie si il y a que des lettres dans le nom
+    if(nom.value.match(letters)) { 
+      styleSuccess(nom);
+    } else {
+      styleError(nom);
+      errors++;
+    }
+  } else {
+    styleError(nom);
+    errors++;
+  }
+
+  // Check Name
+  if(prenom.value !== null && prenom.value.length > 2) {
+    var letters = /^[A-Za-z]+$/;
+    //Verifie si il y a que des lettres dans le prenom
+    if(prenom.value.match(letters)) { 
+      styleSuccess(prenom);
+    } else {
+      styleError(prenom);
+      errors++;
+    }
+  } else {
+    styleError(prenom);
+    errors++;
+  }
+
+  // Check Email
+  if(email.value !== null && validateEmail(email.value)) {
+    styleSuccess(email);
+  } else {
+    styleError(email);
+    errors++;
+  }
+
+  // Check Address
+  if(adresse.value !== null && adresse.value.length > 8) {
+    var regex = /^\d+\s[A-z]+\s[A-z]+/;
+    //Verifie si c'est une adresse
+    if(adresse.value.match(regex)) { 
+      styleSuccess(adresse);
+    } else {
+      styleError(adresse);
+      errors++;
+    }
+  } else {
+    styleError(adresse);
+    errors++;
+  }
+
+  // Check City
+  if(ville.value !== null && ville.value.length > 2) {
+    var letters = /^[A-Za-z]+$/;
+    //Verifie si il y a que des lettres dans la ville
+    if(ville.value.match(letters)) { 
+      styleSuccess(ville);
+    } else {
+      styleError(ville);
+      errors++;
+    }
+  } else {
+    styleError(ville);
+    errors++;
+  }
+
+  // Show error message if errors is not null
+  if(errors !== 0) {
+    showError();
+    return false;
+  } else {
+    // Confirmation envoie de la commande + redirection
+    if(confirmationOrder()) {
+      // ajoute infos dans session storage
+      infosOrder();
+      // supprimer le panier
+      window.localStorage.clear();
+      // redirection vers page confirmation
+      document.location.href='http://localhost:3000/confirmation/';
+    } else {
+      cartEmpty();
+      return false;
+    }
+  }
+
+}
+
+// validation du champs email avec un regex
+function validateEmail(email) {
+  var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return regex.test(email);
+}
+
+// affiche popup erreur champs input
+function showError(){
+  Swal.fire({
+    position: 'top',
+    toast: true,
+    icon: 'error',
+    title: 'Certains champs sont invalides !',
+    showConfirmButton: false,
+    timer: 2000
+  });
+}
+
+// affiche popup erreur panier vide
+function cartEmpty(){
+  Swal.fire({
+    position: 'top',
+    toast: true,
+    icon: 'error',
+    title: 'Panier vide ! Pas de commande !',
+    showConfirmButton: false,
+    timer: 2000
+  });
+}
+
+// modifie css input (erreur)
+function styleError(element) {
+  element.classList.remove("input-success");
+  element.classList.add("input-error");
+}
+
+// modifie css input (success)
+function styleSuccess(element) {
+  element.classList.remove("input-error");
+  element.classList.add("input-success");
+}
+
+// creation requete post pour la commande + envoi au serveur
+function confirmationOrder() {
+  const cart = JSON.parse(window.localStorage.getItem('CART'));
+  
+  if(cart) {
+    if(Array.isArray(cart.items) && cart.items.length) {
+      
+      // Creation du contact
+      var contact = {
+        firstName: prenom.value,
+        lastName: nom.value,
+        address: adresse.value,
+        city: ville.value,
+        email: email.value
+      };
+
+      var products_id = [];
+      // Creation du products_id
+      for(i=0; i<cart.items.length; i++) {
+        products_id.push(cart.items[i].id);
+      }
+
+      // post body data 
+      var data = {
+        contact: contact, 
+        products: products_id
+      };
+
+      // create request object
+      const request = new Request('../api/teddies/order', {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: new Headers({
+              'Content-Type': 'application/json'
+          })
+      });
+
+      // pass request object to `fetch()`
+      fetch(request)
+        .then(res => res.json())
+        .then(res => console.log(res));
+
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
+// ajoute infos sur la commande dedans la session storage
+function infosOrder() {
+  var cart = JSON.parse(window.localStorage.getItem('CART'));
+  var sum_price = 0;
+
+  // calcul du prix total
+  for(var i=0; i < cart.items.length; i++) {
+    var prix_item = cart.items[i].price * cart.items[i].quantity;
+    sum_price += prix_item;
+  }
+  
+  // add order infos in session storage 
+  var commande = {
+    order_id: cart.key,
+    total_price: sum_price
+  };
+
+  window.sessionStorage.setItem('ORDER', JSON.stringify(commande));
 }
