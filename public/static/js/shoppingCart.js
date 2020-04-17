@@ -1,6 +1,15 @@
-
 const tableCart = document.getElementById('listing_cart');
 const totalCart = document.getElementById('total__price');
+const removeCart = document.getElementById("remove_cart");
+
+// get dom elements for form validation
+var nom = document.getElementById('surname');
+var prenom = document.getElementById('name');
+var email = document.getElementById('email');
+var adresse = document.getElementById('address');
+var ville = document.getElementById('city');
+var submitForm = document.getElementById('submitForm');
+
 
 // ------------------------------------------
 //  FUNCTIONS
@@ -40,7 +49,7 @@ function showListItems() {
           var cel3 = newRow.insertCell(3);
           var cel4 = newRow.insertCell(4);
 
-          cel0.innerHTML = '<img src="'+data.imageUrl+'" alt="'+data.name+'" width="100px">';
+          cel0.innerHTML = '<img class="img_cart" src="'+data.imageUrl+'" alt="'+data.name+'" width="100px">';
           cel1.innerHTML = data.name;
           cel2.innerHTML = prix_calcul+' €';
 
@@ -89,9 +98,9 @@ async function getItem(id) {
 //  EVENTS FUNCTIONS
 // ------------------------------------------
 
-const removeCart = document.getElementById("remove_cart");
 removeCart.addEventListener("click", remove_Cart)
 
+// vide totalement le panier
 function remove_Cart() {
   Swal.fire({
       title: 'Etes-vous sûr ?',
@@ -116,6 +125,7 @@ function remove_Cart() {
 
 }
 
+// augmenter ou baisser la lquantité d'un article
 function quantity_Item() {
   var index = this.id;
   var quantite = parseInt(this.value);
@@ -157,6 +167,7 @@ function quantity_Item() {
   }
 }
 
+// supprime l'article du panier
 function remove_Item() {
   var index = this.id;
 
@@ -186,16 +197,9 @@ function remove_Item() {
 //  FORMS VALIDATIONS & POST
 // ------------------------------------------
 
-var submitForm = document.getElementById('submitForm');
 submitForm.addEventListener("click", formValidation)
 
-// get dom elements for form validation
-var nom = document.getElementById('surname');
-var prenom = document.getElementById('name');
-var email = document.getElementById('email');
-var adresse = document.getElementById('address');
-var ville = document.getElementById('city');
-
+// Validation du formulaire + redirection 
 function formValidation() {
   event.preventDefault() // Annule l'action par defaut du bouton
   var errors = 0;
@@ -268,19 +272,19 @@ function formValidation() {
     errors++;
   }
 
-  // Show error message if errors is not null
+  // Show error message || post request 
   if(errors !== 0) {
     showError();
     return false;
   } else {
     // Confirmation envoie de la commande + redirection
     if(confirmationOrder()) {
-      // ajoute infos dans session storage
-      infosOrder();
       // supprimer le panier
       window.localStorage.clear();
-      // redirection vers page confirmation
-      document.location.href='http://localhost:3000/confirmation/';
+      // redirection vers page confirmation avec timer
+      window.setTimeout( function(){
+          document.location.href='http://localhost:3000/confirmation/';
+      }, 15000 );
     } else {
       cartEmpty();
       return false;
@@ -288,6 +292,10 @@ function formValidation() {
   }
 
 }
+
+// ------------------------------------------
+//  HELPERS FUNCTIONS
+// ------------------------------------------
 
 // validation du champs email avec un regex
 function validateEmail(email) {
@@ -348,9 +356,14 @@ function confirmationOrder() {
       };
 
       var products_id = [];
-      // Creation du products_id
+      var sum_price = 0;
+
+      // Creation du products_id && Calcul prix total
       for(i=0; i<cart.items.length; i++) {
         products_id.push(cart.items[i].id);
+
+        var prix_item = cart.items[i].price * cart.items[i].quantity;
+        sum_price += prix_item;
       }
 
       // post body data 
@@ -371,7 +384,7 @@ function confirmationOrder() {
       // pass request object to `fetch()`
       fetch(request)
         .then(res => res.json())
-        .then(res => console.log(res));
+        .then(res => infosOrder(res, sum_price)); // ajoute infos dans session storage
 
       return true;
     } else {
@@ -383,20 +396,17 @@ function confirmationOrder() {
 }
 
 // ajoute infos sur la commande dedans la session storage
-function infosOrder() {
+function infosOrder(response, priceTotal) {
   var cart = JSON.parse(window.localStorage.getItem('CART'));
-  var sum_price = 0;
 
-  // calcul du prix total
-  for(var i=0; i < cart.items.length; i++) {
-    var prix_item = cart.items[i].price * cart.items[i].quantity;
-    sum_price += prix_item;
-  }
+  console.log('Réponse du serveur :');
+  console.log(response);
+  console.log('Prix Total : '+priceTotal);
   
   // add order infos in session storage 
   var commande = {
-    order_id: cart.key,
-    total_price: sum_price
+    order_id: response.orderId,
+    total_price: priceTotal
   };
 
   window.sessionStorage.setItem('ORDER', JSON.stringify(commande));

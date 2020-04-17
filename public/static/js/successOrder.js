@@ -1,4 +1,6 @@
 
+var orderContainer = document.getElementById('order_container');
+
 var commande = JSON.parse(window.sessionStorage.getItem('ORDER'));
 
 if(commande) {
@@ -20,4 +22,6 @@ if(commande) {
     
     numCommande.innerHTML += 'Numéro de votre commande : &nbsp;'+ commande.order_id;
     totalCommande.innerHTML += 'Prix Total : '+ commande.total_price+' €';
+} else {
+    orderContainer.innerHTML = '<h2 class="title__list">Vous n\'avez pas encore commander !</h2>';
 }

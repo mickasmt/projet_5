@@ -29,6 +29,7 @@ a {
 .main_container {
     margin: auto;
     max-width: 1190px;
+    padding: 0 20px;
 }
 .pt-20 {
     padding-top: 20px;
@@ -214,7 +215,7 @@ input[type=text], select {
 }
 
 input[type=submit] {
-    width: 30%;
+    /* width: 30%; */
     background-color: #4CAF50;
     color: white;
     padding: 12px 20px;
@@ -248,4 +249,39 @@ th, td {
 }
 td a {
     cursor: pointer;
+}
+
+/* RESPONSIVE */
+@media screen and (max-width: 800px) {
+    #product__container {
+        width: 100%;
+        margin-top: 25px;
+        flex-direction: column;
+    }
+    #product__img,
+    #product__details {
+        padding-left: 0;
+        width: 100%;
+    }
+    table tr td:nth-child(1),
+    .img_cart {
+        display:none;
+    }
+    .quantityChange {
+        width: 50px;
+    }
+    #form_order {
+        width: 100%;
+    }
+    .row_form {
+        flex-direction: column;
+    }
+    .form_group {
+        width: 100%;
+    }
+}
+@media screen and (max-width: 550px) {
+    .main_container {
+        margin: 0 5px;
+    }
 }
